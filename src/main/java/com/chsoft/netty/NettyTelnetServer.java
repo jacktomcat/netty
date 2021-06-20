@@ -26,20 +26,23 @@ public class NettyTelnetServer {
         serverBootstrap.option(ChannelOption.SO_BACKLOG, 1024);
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)  // 指定是一个NIO连接通道
-                .handler(new LoggingHandler(LogLevel.INFO))
+                .handler(new LoggingHandler(LogLevel.WARN))
                 .childHandler(new NettyTelnetInitializer());
 
         // 绑定对应的端口号,并启动开始监听端口上的连接
         Channel ch = serverBootstrap.bind(PORT).sync().channel();
 
         // 等待关闭,同步端口
+        System.out.println("关闭之前......");
         ch.closeFuture().sync();
+        System.out.println("关闭之后......");
     }
 
 
     public void close(){
         bossGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
+        System.out.println("close");
     }
 
 }
